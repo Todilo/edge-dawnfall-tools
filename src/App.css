@@ -1,0 +1,12 @@
+.site-card-wrapper {
+  margin: 10px;
+}
+
+[data-theme="dark"] .site-card-wrapper {
+  background: #303030;
+}
+
+.title {
+  float: left;
+  color: white;
+}

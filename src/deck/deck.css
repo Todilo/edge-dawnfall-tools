@@ -1,0 +1,8 @@
+.deck-name-edit {
+  display: flex;
+  align-items: center;
+}
+
+.deck-name-edit__save {
+  margin: 10px;
+}

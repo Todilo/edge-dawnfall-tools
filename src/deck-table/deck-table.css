@@ -1,0 +1,13 @@
+.deck-table__cost-type {
+  width: 30px;
+}
+
+.deck-table__card-image {
+  max-width: 250px;
+  width: 100%;
+  height: 350px;
+}
+td.deck-table__collection-cell {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

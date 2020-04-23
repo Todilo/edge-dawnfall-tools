@@ -1,0 +1,16 @@
+.squad-selector__card-image {
+  width: 346px;
+  height: 245px;
+}
+
+.squad-selector__squad {
+  padding: 5px;
+  display: flex;
+}
+.squad-selector__squad-button {
+  flex-grow: 1;
+}
+
+.squad-selector__faction-select {
+  margin-bottom: 10px;
+}
