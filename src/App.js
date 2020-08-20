@@ -56,7 +56,7 @@ export default function App() {
               </Content>
               <Footer style={{ textAlign: "center" }}>
                 Edge Dawnfall Toolbox Created by Todilo. Post any feedback to
-                todilo+edgedawnfall (at) gmail . com
+                todilo87+edgedawnfall (at) gmail . com
               </Footer>
             </Layout>
           </Layout>
