@@ -101,7 +101,7 @@ export default function DeckPage({ readonly }) {
     deck.squads.forEach((id) => {
       dispatchSquads({ type: "add", id });
     });
-
+    setDeckName(deck.name);
     setDeckId(id);
   };
 
