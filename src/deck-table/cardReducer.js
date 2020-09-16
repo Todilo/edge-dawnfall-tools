@@ -3,7 +3,6 @@ export default function cardReducer(state, action) {
     case "reset":
       return action.reset;
     case "add":
-      debugger;
       const existingItemToAdd = state.find(
         (item) => item.id === action.id && item.count < item.cardCount
       );

@@ -74,6 +74,7 @@ const getInitialFaction = () => {
 };
 
 export default function DeckPage({ readonly }) {
+  const [isDeckLocked, setIsDeckLocked] = useState(readonly);
   const [alertMessages, setAlertMessages] = useState([]);
   const [deckName, setDeckName] = useState("New deck");
   const [deckId, setDeckId] = useState(Date.now().toString());
@@ -121,6 +122,10 @@ export default function DeckPage({ readonly }) {
     history.push("");
     reset();
   };
+
+  useEffect(() => {
+    setIsDeckLocked(readonly || deckId < 50);
+  }, [deckId, readonly]);
 
   const saveDeck = () => {
     var faction = selectedFaction.type;
@@ -175,9 +180,17 @@ export default function DeckPage({ readonly }) {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    var queryCardIds = searchParams.getAll("cards").filter((s) => s !== "");
+    var queryCardIds = searchParams.get("cards");
+    if (!queryCardIds) return;
+    queryCardIds = queryCardIds.split(",").filter((s) => s !== "");
 
-    var querySquadIds = searchParams.getAll("squads").filter((s) => s !== "");
+    var querySquadIds = searchParams.get("squads");
+
+    if (!querySquadIds) return;
+    querySquadIds = searchParams
+      .get("squads")
+      .split("")
+      .filter((s) => s !== "");
     var queryFaction = searchParams.get("faction");
     var deckName = searchParams.get("deckname");
 
@@ -311,7 +324,7 @@ export default function DeckPage({ readonly }) {
         <Row gutter={16}>
           <Col sm={24} xs={24} md={24} lg={8}>
             <SquadSelector
-              readonly={readonly}
+              readonly={isDeckLocked}
               selectedSquads={selectedSquads}
               selectedCards={selectedCards}
               setAlertMessage={setAlertMessage}
@@ -323,6 +336,7 @@ export default function DeckPage({ readonly }) {
           </Col>
           <Col md={24} sm={24} xs={24} lg={8}>
             <Deck
+              readonly={isDeckLocked}
               deckId={deckId}
               setDeckName={setDeckName}
               deckName={deckName}
@@ -339,7 +353,7 @@ export default function DeckPage({ readonly }) {
 
       <div className="site-card-wrapper">
         <DeckTable
-          readonly={readonly}
+          readonly={isDeckLocked}
           squadTypes={squadTypes}
           selectedCards={selectedCards}
           dispatchCards={dispatchCards}

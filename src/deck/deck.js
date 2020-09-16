@@ -9,6 +9,7 @@ export default function Deck({
   saveDeck,
   deckId,
   dispatchCards,
+  readonly,
 }) {
   const numerOfSelectedCards = () => {
     if (!selectedCards) return 0;
@@ -53,25 +54,31 @@ export default function Deck({
                     justifyContent: "flex-end",
                   }}
                 >
-                  <Button
-                    type="link"
-                    size="small"
-                    onClick={() =>
-                      dispatchCards({ type: "remove", id: item.id })
-                    }
-                    // disabled={record.cardCount === record.count}
-                  >
-                    -
-                  </Button>{" "}
+                  {!readonly && (
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() =>
+                        dispatchCards({ type: "remove", id: item.id })
+                      }
+                      disabled={item.cardCount === item.count || readonly}
+                    >
+                      -
+                    </Button>
+                  )}
                   {item.count} / {item.cardCount}
-                  <Button
-                    type="link"
-                    size="small"
-                    onClick={() => dispatchCards({ type: "add", id: item.id })}
-                    // disabled={record.cardCount === record.count}
-                  >
-                    +
-                  </Button>
+                  {!readonly && (
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() =>
+                        dispatchCards({ type: "add", id: item.id })
+                      }
+                      disabled={item.cardCount === item.count || readonly}
+                    >
+                      +
+                    </Button>
+                  )}
                 </span>
               </div>
             ))}
