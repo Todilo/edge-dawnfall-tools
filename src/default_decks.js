@@ -32,6 +32,5 @@ export const defaultDecks = [
       20,
     ],
     deckName: "Preconstructed starting deck",
-    isPreconstructed: true,
   },
 ];

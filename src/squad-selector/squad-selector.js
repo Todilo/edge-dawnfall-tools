@@ -118,7 +118,7 @@ function SquadSelector({
             <Popover
               content={content(squad.img, squad.imgBack)}
               trigger="hover"
-              placement="bottom"
+              placement="right"
             >
               <Button size="small" className="squad-selector__squad-button">
                 <span style={{ float: "left" }}>

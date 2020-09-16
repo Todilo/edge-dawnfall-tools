@@ -8,8 +8,10 @@ export default function Deck({
   setDeckName,
   saveDeck,
   deckId,
+  dispatchCards,
 }) {
   const numerOfSelectedCards = () => {
+    if (!selectedCards) return 0;
     return selectedCards.length > 0
       ? selectedCards.reduce((previous, current) => {
           if (current.ignoreLimit) return previous;
@@ -51,7 +53,25 @@ export default function Deck({
                     justifyContent: "flex-end",
                   }}
                 >
+                  <Button
+                    type="link"
+                    size="small"
+                    onClick={() =>
+                      dispatchCards({ type: "remove", id: item.id })
+                    }
+                    // disabled={record.cardCount === record.count}
+                  >
+                    -
+                  </Button>{" "}
                   {item.count} / {item.cardCount}
+                  <Button
+                    type="link"
+                    size="small"
+                    onClick={() => dispatchCards({ type: "add", id: item.id })}
+                    // disabled={record.cardCount === record.count}
+                  >
+                    +
+                  </Button>
                 </span>
               </div>
             ))}

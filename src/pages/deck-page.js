@@ -51,10 +51,6 @@ const getInitialUserDecks = () => {
   return decks;
 };
 
-const setUserDeckInLocalStorage = (storedDecks) => {
-  localStorage.setItem("savedDecks", storedDecks);
-};
-
 const getInitialCards = (selectedFaction) => {
   // var localStorageCards = JSON.parse(window.localStorage.getItem("cards"));
   // if (localStorageCards) {
@@ -174,6 +170,7 @@ export default function DeckPage({ readonly }) {
   useEffect(() => {
     if (location.pathname !== "/") return;
     reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFaction]);
 
   useEffect(() => {
@@ -206,6 +203,7 @@ export default function DeckPage({ readonly }) {
       dispatchSquads({ type: "add", id: parseInt(id) });
     });
     setDeckName(deckName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   const setAlertMessage = useCallback(
@@ -330,6 +328,7 @@ export default function DeckPage({ readonly }) {
               deckName={deckName}
               selectedCards={selectedCards}
               saveDeck={saveDeck}
+              dispatchCards={dispatchCards}
             ></Deck>
           </Col>
           <Col md={24} sm={24} xs={24} lg={8}>
