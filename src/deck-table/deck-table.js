@@ -201,7 +201,6 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
     });
   };
   useEffect(() => {
-    console.log("render");
     // Generate filters
     var squadFilter = selectedCards
       .map((card) => {

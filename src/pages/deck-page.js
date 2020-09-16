@@ -166,7 +166,6 @@ export default function DeckPage({ readonly }) {
       type: "reset",
       reset: getInitialSquad(selectedFaction),
     });
-    console.log(selectedFaction);
     dispatchCards({ type: "reset", reset: getInitialCards(selectedFaction) });
     dispatchDecks({ type: "reset", reset: getInitialUserDecks() });
     setDeckId(Date.now().toString());
