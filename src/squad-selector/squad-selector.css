@@ -1,6 +1,16 @@
+.squad-selector__banner-popover {
+  text-align: center;
+}
+.squad-selector__card-image-holder {
+  display: inline-block;
+}
 .squad-selector__card-image {
-  width: 346px;
-  height: 245px;
+  max-width: 346px;
+  max-height: 346px;
+  padding: 0 5px 0 5px;
+}
+.squad-selector__card-image--front {
+  margin: 0 0 5px 0;
 }
 
 .squad-selector__squad {
@@ -13,4 +23,10 @@
 
 .squad-selector__faction-select {
   margin-bottom: 10px;
+}
+
+.squad-select__generic-card-popover {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px;
 }

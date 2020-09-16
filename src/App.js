@@ -5,7 +5,7 @@ import React from "react";
 import { Layout, Typography } from "antd";
 
 // Own components
-import SidebarMenu from "./sidebar-menu/sidebar-menu";
+// import SidebarMenu from "./sidebar-menu/sidebar-menu";
 import {
   DeckPage,
   ExtraResourcesPage,
@@ -14,7 +14,7 @@ import {
 } from "./pages/";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Footer, Content } = Layout;
 const { Title } = Typography;
 
 export default function App() {
@@ -22,7 +22,7 @@ export default function App() {
     <div className="App">
       <Router>
         <Layout>
-          <Header>
+          <Header className="header-container">
             <Title
               style={{ color: "white", textAlign: "left", padding: "0 20px" }}
               level={3}
@@ -31,14 +31,14 @@ export default function App() {
             </Title>
           </Header>
           <Layout>
-            <Sider>
+            {/* <Sider breakpoint="lg" collapsedWidth="0">
               <SidebarMenu />
-            </Sider>
+            </Sider> */}
             <Layout style={{ padding: 0 }}>
               <Content>
                 <Switch>
                   <Route exact path="/">
-                    <DeckPage></DeckPage>
+                    <DeckPage readonly={false}></DeckPage>
                   </Route>
                   <Route path="/deck">
                     <DeckPage readonly={true}></DeckPage>

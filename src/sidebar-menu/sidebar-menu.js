@@ -3,8 +3,8 @@ import { Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 
 import DeckIcon from "../icons/deck-icon";
-import CampaignMapIcon from "../icons/campaign-map-icon";
-import { ContainerOutlined } from "@ant-design/icons";
+// import CampaignMapIcon from "../icons/campaign-map-icon";
+// import { ContainerOutlined } from "@ant-design/icons";
 
 export default function SidebarMenu() {
   const [selectedKeysFomUrl, setSelectedKeys] = useState([]);
@@ -25,7 +25,7 @@ export default function SidebarMenu() {
         Deckbuilder
         <Link to="/" />
       </Menu.Item>
-      <Menu.Item key="/campaign">
+      {/* <Menu.Item key="/campaign">
         <CampaignMapIcon />
         Campaign Tracker
         <Link to="/campaign" />
@@ -39,7 +39,7 @@ export default function SidebarMenu() {
         <ContainerOutlined />
         <span>Editor page</span>
         <Link to="/editor-page" />
-      </Menu.Item>
+      </Menu.Item> */}
     </Menu>
   );
 }

@@ -7,11 +7,13 @@ export default function Deck({
   deckName,
   setDeckName,
   saveDeck,
+  deckId,
 }) {
   const numerOfSelectedCards = () => {
     return selectedCards.length > 0
       ? selectedCards.reduce((previous, current) => {
-          return previous + current.count;
+          if (current.ignoreLimit) return previous;
+          else return previous + current.count;
         }, 0)
       : 0;
   };
@@ -65,6 +67,7 @@ export default function Deck({
               type="primary"
               htmlType="submit"
               className="deck-name-edit__save"
+              disabled={deckId < 50}
               onClick={saveDeck}
             >
               Save

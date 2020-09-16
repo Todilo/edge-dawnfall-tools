@@ -6,7 +6,21 @@ var content = (cardSource) => (
     <img className="deck-table__card-image" src={cardSource} alt="" />
   </div>
 );
+
+function costTypeToImageSrc(costType) {
+  switch (costType) {
+    case "crystal":
+      return "./crystal.png";
+    case "charge":
+      return "./charge.png";
+    case "darkness":
+      return "./dark_point.png";
+    default:
+      return "";
+  }
+}
 function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
+  const [cards, setCards] = useState(selectedCards);
   const [columns, setColumns] = useState([
     {
       title: "Collection",
@@ -16,7 +30,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
       align: "center",
       render: (text, record) => (
         <div>
-          {!readonly && (
+          {!record.readonly && (
             <Button
               type="link"
               size="small"
@@ -30,7 +44,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
             {record.count || 0} /{record.cardCount}{" "}
           </span>
 
-          {!readonly && (
+          {!record.readonly && (
             <Button
               type="link"
               size="small"
@@ -94,9 +108,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
           <img
             className="deck-table__cost-type"
             alt="Cost type"
-            src={
-              record.costType === "crystal" ? "./crystal.png" : "./charge.png"
-            }
+            src={costTypeToImageSrc(record.costType)}
           />
         </span>
       ),
@@ -189,6 +201,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
     });
   };
   useEffect(() => {
+    console.log("render");
     // Generate filters
     var squadFilter = selectedCards
       .map((card) => {
@@ -213,8 +226,20 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
       )
     );
   }, [selectedCards, squadTypes]);
+  useEffect(() => {
+    var updateCards = [...selectedCards];
+    updateCards.forEach((card) => (card.readonly = readonly));
+    setCards(updateCards);
+  }, [readonly, selectedCards]);
 
-  return <Table columns={columns} dataSource={selectedCards} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={cards}
+      pagination={false}
+      scroll={{ x: true }}
+    />
+  );
 }
 
 export default DeckTable;

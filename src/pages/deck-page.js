@@ -2,6 +2,7 @@ import "../deck-table/deck-table.css";
 // Data
 import { cards } from "../cards";
 import { squadTypes } from "../squadTypes";
+import { defaultDecks } from "../default_decks";
 
 import { factions } from "../factions";
 
@@ -22,13 +23,14 @@ import SaveDeck from "../deck/save-deck";
 import DisplayMessages from "../display-messages/display-messages";
 
 import cardReducer from "../deck-table/cardReducer";
+import userDeckReducer from "../deck/userDeckReducer";
 
 const getInitialSquad = (selectedFaction) => {
-  var localStorageSquads = JSON.parse(window.localStorage.getItem("squads"));
-  if (localStorageSquads) {
-    window.localStorage.removeItem("squads");
-    return localStorageSquads;
-  }
+  // var localStorageSquads = JSON.parse(window.localStorage.getItem("squads"));
+  // if (localStorageSquads) {
+  //   window.localStorage.removeItem("squads");
+  //   return localStorageSquads;
+  // }
 
   var listOfSquads = squadTypes.filter(
     (squad) =>
@@ -40,54 +42,117 @@ const getInitialSquad = (selectedFaction) => {
 
   return listOfSquads;
 };
+const getInitialUserDecks = () => {
+  var decks = JSON.parse(localStorage.getItem("savedDecks")) || [];
+  defaultDecks.forEach((deck) => {
+    if (decks.some((d) => d.id === deck.id)) return;
+    decks.push(deck);
+  });
+  return decks;
+};
+
+const setUserDeckInLocalStorage = (storedDecks) => {
+  localStorage.setItem("savedDecks", storedDecks);
+};
 
 const getInitialCards = (selectedFaction) => {
-  var localStorageCards = JSON.parse(window.localStorage.getItem("cards"));
-  if (localStorageCards) {
-    window.localStorage.removeItem("cards");
-    return localStorageCards;
-  }
+  // var localStorageCards = JSON.parse(window.localStorage.getItem("cards"));
+  // if (localStorageCards) {
+  //   window.localStorage.removeItem("cards");
+  //   return localStorageCards;
+  // }
 
   var listOfCards = cards.filter(
     (card) => card.faction === selectedFaction.type
   );
-  console.log(listOfCards);
   return listOfCards;
 };
 
 const getInitialFaction = () => {
-  var localStorageFaction = JSON.parse(window.localStorage.getItem("faction"));
-  if (localStorageFaction) {
-    window.localStorage.removeItem("faction");
-    return localStorageFaction;
-  }
-
+  // var localStorageFaction = JSON.parse(window.localStorage.getItem("faction"));
+  // if (localStorageFaction) {
+  //   window.localStorage.removeItem("faction");
+  //   return localStorageFaction;
+  // }
   return factions[0];
 };
 
 export default function DeckPage({ readonly }) {
   const [alertMessages, setAlertMessages] = useState([]);
-  const [deckName, setDeckName] = useState("");
+  const [deckName, setDeckName] = useState("New deck");
+  const [deckId, setDeckId] = useState(Date.now().toString());
   const location = useLocation();
   const history = useHistory();
 
   const [selectedSquads, dispatchSquads] = useReducer(cardReducer, []);
   const [selectedCards, dispatchCards] = useReducer(cardReducer, []);
   const [selectedFaction, setFaction] = useState(getInitialFaction());
-  const [savedDecks, setSavedDecks] = useState([
-    {
-      faction: "Chapter",
-      decks: [{ name: "My cool deck", id: 1 }, { id: 2 }, { id: 3 }],
-    },
-    {
-      faction: "Demon",
-      decks: [{ name: "My cool deck", id: 1 }, { id: 2 }, { id: 3 }],
-    },
-    {
-      faction: "Darkness",
-      decks: [],
-    },
-  ]);
+  const [savedDecks, dispatchDecks] = useReducer(userDeckReducer, []);
+  const loadDeck = (id) => {
+    var deck = savedDecks.find((deck) => deck.id === id);
+
+    var faction = changeFaction(deck.faction);
+    dispatchSquads({
+      type: "reset",
+      reset: getInitialSquad(faction),
+    });
+
+    dispatchCards({ type: "reset", reset: getInitialCards(faction) });
+
+    deck.cards.forEach((id) => {
+      dispatchCards({ type: "add", id });
+    });
+    deck.squads.forEach((id) => {
+      dispatchSquads({ type: "add", id });
+    });
+
+    setDeckId(id);
+  };
+
+  const newDeck = () => {
+    // window.localStorage.setItem(
+    //   "squads",
+    //   JSON.stringify(selectedSquads)
+    // );
+    // window.localStorage.setItem(
+    //   "cards",
+    //   JSON.stringify(selectedCards)
+    // );
+    // window.localStorage.setItem(
+    //   "faction",
+    //   JSON.stringify(selectedFaction)
+    // );
+    history.push("");
+    reset();
+  };
+
+  const saveDeck = () => {
+    var faction = selectedFaction.type;
+    var squads = getIdsFromList(selectedSquads);
+    var cards = getIdsFromList(selectedCards);
+
+    if (deckName.length === 0) {
+      message.error("Can not save deck, please set a name.");
+      return;
+    }
+
+    dispatchDecks({
+      type: "addOrUpdate",
+      faction: faction,
+      squads: squads,
+      cards: cards,
+      deckName: deckName,
+      id: deckId,
+    });
+    history.push("");
+  };
+
+  useEffect(() => {
+    // Intentionally not possible to clear save-decks because that was too tricky.
+    if (savedDecks.length > 0) {
+      localStorage.setItem("savedDecks", JSON.stringify(savedDecks));
+    }
+  }, [savedDecks]);
 
   const changeFaction = useCallback((faction) => {
     var newFaction = factions.find((f) => f.type === faction);
@@ -95,27 +160,36 @@ export default function DeckPage({ readonly }) {
     return newFaction;
   }, []);
 
-  // This needs to fire before the query fetching
-  useEffect(() => {
-    debugger;
-    if (location.pathname !== "/") return;
+  const reset = () => {
     dispatchSquads({
       type: "reset",
       reset: getInitialSquad(selectedFaction),
     });
     console.log(selectedFaction);
     dispatchCards({ type: "reset", reset: getInitialCards(selectedFaction) });
-    // clear cards
+    dispatchDecks({ type: "reset", reset: getInitialUserDecks() });
+    setDeckId(Date.now().toString());
+  };
+  // This needs to fire before the query fetching
+  useEffect(() => {
+    if (location.pathname !== "/") return;
+    reset();
   }, [selectedFaction]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    var queryCardIds = searchParams.get("cards")?.split(",");
+    var queryCardIds = searchParams.getAll("cards").filter((s) => s !== "");
 
-    var querySquadIds = searchParams.get("squads")?.split(",");
+    var querySquadIds = searchParams.getAll("squads").filter((s) => s !== "");
     var queryFaction = searchParams.get("faction");
+    var deckName = searchParams.get("deckname");
 
-    if (!queryCardIds || !querySquadIds || !queryFaction) return;
+    if (
+      queryCardIds.length === 0 ||
+      querySquadIds.length === 0 ||
+      !queryFaction
+    )
+      return;
 
     var faction = changeFaction(queryFaction);
     dispatchSquads({
@@ -131,6 +205,7 @@ export default function DeckPage({ readonly }) {
     querySquadIds.forEach((id) => {
       dispatchSquads({ type: "add", id: parseInt(id) });
     });
+    setDeckName(deckName);
   }, [location]);
 
   const setAlertMessage = useCallback(
@@ -156,7 +231,10 @@ export default function DeckPage({ readonly }) {
           );
         }
       } else if (message !== "") {
-        setAlertMessages([...alertMessages, { caller, message }]);
+        setAlertMessages([
+          ...alertMessages,
+          { caller, message, key: Date.now().toString() },
+        ]);
       }
     },
     [alertMessages]
@@ -173,9 +251,18 @@ export default function DeckPage({ readonly }) {
     }, []);
     return items;
   };
+
   const copyDeckUrlToClipboard = () => {
     var squads = getIdsFromList(selectedSquads);
     var cards = getIdsFromList(selectedCards);
+    if (cards.length === 0) {
+      message.error("Unable to share deck. You have not selected any cards");
+      return;
+    }
+    if (squads.length === 0) {
+      message.error("Unable to share deck. You have not selected any squads");
+      return;
+    }
     var url =
       window.location.origin +
       "/deck?cards=" +
@@ -183,7 +270,9 @@ export default function DeckPage({ readonly }) {
       "&squads=" +
       squads.toString() +
       "&faction=" +
-      selectedFaction.type;
+      selectedFaction.type +
+      "&deckname=" +
+      encodeURIComponent(deckName);
 
     copy(url, {
       debug: true,
@@ -191,10 +280,6 @@ export default function DeckPage({ readonly }) {
     });
 
     message.success(url + " was copied to your clipboard");
-  };
-
-  const saveDeck = () => {
-    console.log("save deck");
   };
 
   return (
@@ -205,19 +290,7 @@ export default function DeckPage({ readonly }) {
             key="new"
             size="small"
             onClick={() => {
-              window.localStorage.setItem(
-                "squads",
-                JSON.stringify(selectedSquads)
-              );
-              window.localStorage.setItem(
-                "cards",
-                JSON.stringify(selectedCards)
-              );
-              window.localStorage.setItem(
-                "faction",
-                JSON.stringify(selectedFaction)
-              );
-              history.push("");
+              newDeck();
             }}
           >
             <PlusSquareOutlined /> New deck
@@ -229,12 +302,16 @@ export default function DeckPage({ readonly }) {
           >
             <LinkOutlined /> Share deck url
           </Button>
-          <SaveDeck savedDecks={savedDecks}></SaveDeck>
+          <SaveDeck
+            savedDecks={savedDecks}
+            loadDeck={loadDeck}
+            factions={factions}
+          ></SaveDeck>
         </Space>
       </div>
       <div className="site-card-wrapper">
         <Row gutter={16}>
-          <Col span={8}>
+          <Col sm={24} xs={24} md={24} lg={8}>
             <SquadSelector
               readonly={readonly}
               selectedSquads={selectedSquads}
@@ -246,15 +323,16 @@ export default function DeckPage({ readonly }) {
               selectedFaction={selectedFaction}
             ></SquadSelector>
           </Col>
-          <Col span={8}>
+          <Col md={24} sm={24} xs={24} lg={8}>
             <Deck
+              deckId={deckId}
               setDeckName={setDeckName}
               deckName={deckName}
               selectedCards={selectedCards}
               saveDeck={saveDeck}
             ></Deck>
           </Col>
-          <Col span={8}>
+          <Col md={24} sm={24} xs={24} lg={8}>
             <DisplayMessages alertMessages={alertMessages} />
           </Col>
         </Row>

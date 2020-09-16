@@ -49,9 +49,29 @@ function SquadSelector({
     }
   }, [selectedCards, selectedSquads, setAlertMessage]);
 
-  const content = (cardSource) => (
+  const content = (cardSource, cardBackSource) => (
     <div>
       <img className="squad-selector__card-image" src={cardSource} alt="" />
+      <img className="squad-selector__card-image" src={cardBackSource} alt="" />
+    </div>
+  );
+
+  const bannerImagePopoverContent = (bannerSource, bannerBackSource) => (
+    <div className="squad-selector__banner-popover">
+      <figure className="squad-selector__card-image-holder">
+        <img className="squad-selector__card-image" src={bannerSource} alt="" />
+        <figcaption>Front</figcaption>
+      </figure>
+      {bannerBackSource && (
+        <figure className="squad-selector__card-image-holder">
+          <img
+            className="squad-selector__card-image"
+            src={bannerBackSource}
+            alt=""
+          />
+          <figcaption>Back</figcaption>
+        </figure>
+      )}
     </div>
   );
 
@@ -96,7 +116,7 @@ function SquadSelector({
               </Button>
             )}
             <Popover
-              content={content(squad.img)}
+              content={content(squad.img, squad.imgBack)}
               trigger="hover"
               placement="bottom"
             >
@@ -105,7 +125,8 @@ function SquadSelector({
                   {squad.count} / {squad.cardCount}
                 </span>
                 <span>
-                  {squad.name} {squad.isElite ? "(elite)" : ""}
+                  {squad.name} {squad.isElite ? "(elite)" : ""}{" "}
+                  {squad.isCavalry ? "(cavalry)" : ""}
                 </span>
               </Button>
             </Popover>
@@ -131,6 +152,50 @@ function SquadSelector({
       ) : (
         <div></div>
       )}
+      <div className="squad-select__generic-card-popover">
+        <Popover
+          content={bannerImagePopoverContent(
+            selectedFaction.bannerFrontImageSrc,
+            selectedFaction.bannerBackImageSrc
+          )}
+          trigger="hover"
+          placement="bottom"
+        >
+          <Button size="medium">
+            <span>Banner</span>
+          </Button>
+        </Popover>
+        <Popover
+          content={bannerImagePopoverContent(
+            selectedFaction.bannerAlternativeFront,
+            selectedFaction.bannerAlternativeBack
+          )}
+          trigger="hover"
+          placement="bottom"
+        >
+          <Button
+            size="medium"
+            className="squad-selector__faction-alternative-button"
+          >
+            <span>Alternative banner</span>
+          </Button>
+        </Popover>
+        <Popover
+          content={bannerImagePopoverContent(
+            selectedFaction.shrine,
+            selectedFaction.shrineAlternative
+          )}
+          trigger="hover"
+          placement="bottom"
+        >
+          <Button
+            size="medium"
+            className="squad-selector__faction-alternative-button"
+          >
+            <span>Shrine</span>
+          </Button>
+        </Popover>
+      </div>
     </Card>
   );
 }

@@ -1,5 +1,7 @@
 .deck-table__cost-type {
   width: 30px;
+  margin: 0 auto;
+  display: block;
 }
 
 .deck-table__card-image {

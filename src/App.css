@@ -10,3 +10,8 @@
   float: left;
   color: white;
 }
+
+.header-container {
+  display: flex;
+  align-items: center;
+}
