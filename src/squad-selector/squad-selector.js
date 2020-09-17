@@ -56,20 +56,21 @@ function SquadSelector({
     </div>
   );
 
-  const bannerImagePopoverContent = (bannerSource, bannerBackSource) => (
+  const bannerImagePopoverContent = (
+    frontSource,
+    frontLabel,
+    backSource,
+    backLabel
+  ) => (
     <div className="squad-selector__banner-popover">
       <figure className="squad-selector__card-image-holder">
-        <img className="squad-selector__card-image" src={bannerSource} alt="" />
-        <figcaption>Front</figcaption>
+        <img className="squad-selector__card-image" src={frontSource} alt="" />
+        <figcaption>{frontLabel}</figcaption>
       </figure>
-      {bannerBackSource && (
+      {backSource && (
         <figure className="squad-selector__card-image-holder">
-          <img
-            className="squad-selector__card-image"
-            src={bannerBackSource}
-            alt=""
-          />
-          <figcaption>Back</figcaption>
+          <img className="squad-selector__card-image" src={backSource} alt="" />
+          <figcaption>{backLabel}</figcaption>
         </figure>
       )}
     </div>
@@ -156,7 +157,9 @@ function SquadSelector({
         <Popover
           content={bannerImagePopoverContent(
             selectedFaction.bannerFrontImageSrc,
-            selectedFaction.bannerBackImageSrc
+            "Front",
+            selectedFaction.bannerBackImageSrc,
+            "Back"
           )}
           trigger="hover"
           placement="bottom"
@@ -168,7 +171,9 @@ function SquadSelector({
         <Popover
           content={bannerImagePopoverContent(
             selectedFaction.bannerAlternativeFront,
-            selectedFaction.bannerAlternativeBack
+            "Front",
+            selectedFaction.bannerAlternativeBack,
+            "Back"
           )}
           trigger="hover"
           placement="bottom"
@@ -183,7 +188,9 @@ function SquadSelector({
         <Popover
           content={bannerImagePopoverContent(
             selectedFaction.shrine,
-            selectedFaction.shrineAlternative
+            "Regular",
+            selectedFaction.shrineAlternative,
+            "Alternative"
           )}
           trigger="hover"
           placement="bottom"
