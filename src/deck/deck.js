@@ -61,7 +61,6 @@ export default function Deck({
                       onClick={() =>
                         dispatchCards({ type: "remove", id: item.id })
                       }
-                      disabled={item.cardCount === item.count || readonly}
                     >
                       -
                     </Button>
