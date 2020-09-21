@@ -7,12 +7,15 @@ import { defaultDecks } from "../default_decks";
 import { factions } from "../factions";
 
 import React, { useState, useEffect, useReducer, useCallback } from "react";
-import { Button, Col, Row, message, Space } from "antd";
-
+import { Button, Col, Row, message, Space, Menu, Dropdown } from "antd";
+import { FileExcelOutlined } from "@ant-design/icons";
 import { useLocation, useHistory } from "react-router-dom";
 import { LinkOutlined, PlusSquareOutlined } from "@ant-design/icons";
 
 import copy from "copy-to-clipboard";
+
+import deckExporter from "../deckExporter";
+import { saveAs } from "file-saver";
 
 // Own components
 import DeckTable from "../deck-table/deck-table";
@@ -262,6 +265,37 @@ export default function DeckPage({ readonly }) {
     return items;
   };
 
+  const exportDeckToODS = () => {
+    var fileWithInfo = deckExporter(
+      selectedCards,
+      selectedSquads,
+      deckName,
+      "ods"
+    );
+    saveAs(fileWithInfo.blob, fileWithInfo.fileName);
+  };
+
+  const exportDeckToXLSX = () => {
+    var fileWithInfo = deckExporter(
+      selectedCards,
+      selectedSquads,
+      deckName,
+      "xlsx"
+    );
+    saveAs(fileWithInfo.blob, fileWithInfo.fileName);
+  };
+
+  let exportMenu = (
+    <Menu>
+      <Menu.Item key="shareods" onClick={() => exportDeckToODS()}>
+        ODS
+      </Menu.Item>
+      <Menu.Item key="sharexlxs" onClick={() => exportDeckToXLSX()}>
+        Excel
+      </Menu.Item>
+    </Menu>
+  );
+
   const copyDeckUrlToClipboard = () => {
     var squads = getIdsFromList(selectedSquads);
     var cards = getIdsFromList(selectedCards);
@@ -312,6 +346,14 @@ export default function DeckPage({ readonly }) {
           >
             <LinkOutlined /> Share deck url
           </Button>
+
+          <Dropdown overlay={exportMenu} placement="bottomLeft">
+            <Button key="save" size="small">
+              <FileExcelOutlined />
+              Export to file
+            </Button>
+          </Dropdown>
+
           <SaveDeck
             savedDecks={savedDecks}
             loadDeck={loadDeck}
