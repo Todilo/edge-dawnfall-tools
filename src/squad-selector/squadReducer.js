@@ -6,7 +6,7 @@ export default function squadReducer(state, action) {
       const existingItemToAdd = state.find(
         (item) => item.id === action.id && item.count < item.cardCount
       );
-      if (!existingItemToAdd) return;
+      if (!existingItemToAdd) return state;
 
       return state.map((item) =>
         item.id === existingItemToAdd.id
@@ -20,7 +20,7 @@ export default function squadReducer(state, action) {
       const existingItemToRemove = state.find(
         (item) => item.id === action.id && item.count > 0
       );
-      if (!existingItemToRemove) return;
+      if (!existingItemToRemove) return state;
 
       return state.map((item) =>
         item.id === existingItemToRemove.id

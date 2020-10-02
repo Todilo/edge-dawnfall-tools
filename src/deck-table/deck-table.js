@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { Popover, Button } from "antd";
-var content = (cardSource) => (
+let content = (cardSource) => (
   <div>
     <img className="deck-table__card-image" src={cardSource} alt="" />
   </div>
@@ -82,7 +82,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
       sorter: (a, b) => a.squad < b.squad,
       onFilter: (value, record) => record.squad.indexOf(value) === 0,
       render: (text, record) => {
-        var squad = squadTypes.find((squad) => squad.type === record.squad);
+        let squad = squadTypes.find((squad) => squad.type === record.squad);
         if (typeof squad === "undefined" || squad === null) {
           return <div>undefined</div>;
         }
@@ -166,7 +166,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
   ]);
 
   const replaceSpecialSymbols = (text) => {
-    var splitText = text.split(/(\(base_to_base\)|\(crystal\)|\(charge\))/);
+    let splitText = text.split(/(\(base_to_base\)|\(crystal\)|\(charge\))/);
     return splitText.map((str, i) => {
       if (str === "(base_to_base)") {
         return (
@@ -202,7 +202,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
   };
   useEffect(() => {
     // Generate filters
-    var squadFilter = selectedCards
+    let squadFilter = selectedCards
       .map((card) => {
         return {
           text: squadTypes.find((squadType) => squadType.type === card.squad)
@@ -226,7 +226,7 @@ function DeckTable({ squadTypes, selectedCards, readonly, dispatchCards }) {
     );
   }, [selectedCards, squadTypes]);
   useEffect(() => {
-    var updateCards = [...selectedCards];
+    let updateCards = [...selectedCards];
     updateCards.forEach((card) => (card.readonly = readonly));
     setCards(updateCards);
   }, [readonly, selectedCards]);

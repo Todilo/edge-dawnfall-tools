@@ -23,11 +23,11 @@ function SquadSelector({
   };
 
   useEffect(() => {
-    var selectedDeckCards = selectedCards.filter((card) => card.count > 0);
+    let selectedDeckCards = selectedCards.filter((card) => card.count > 0);
 
     if (selectedDeckCards.length > 0) {
-      var anyCard = selectedDeckCards.reduce((missing, card) => {
-        var find = selectedSquads.find(
+      let anyCard = selectedDeckCards.reduce((missing, card) => {
+        let find = selectedSquads.find(
           (squad) => squad.type === card.squad && squad.count === 0
         );
         if (typeof find !== "undefined" && missing.indexOf(find.name) === -1) {
@@ -37,7 +37,7 @@ function SquadSelector({
       }, []);
 
       if (anyCard.length > 0) {
-        var message =
+        let message =
           "Your deck and squad is not compatible. Missing squads." +
           anyCard.map((card) => "\n" + card);
         setAlertMessage("squadSelector", message);
@@ -50,10 +50,10 @@ function SquadSelector({
   }, [selectedCards, selectedSquads, setAlertMessage]);
 
   const content = (cardSource, cardBackSource) => (
-    <div>
+    <React.Fragment>
       <img className="squad-selector__card-image" src={cardSource} alt="" />
       <img className="squad-selector__card-image" src={cardBackSource} alt="" />
-    </div>
+    </React.Fragment>
   );
 
   const bannerImagePopoverContent = (

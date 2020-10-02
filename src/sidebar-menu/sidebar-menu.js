@@ -3,15 +3,13 @@ import { Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 
 import DeckIcon from "../icons/deck-icon";
-// import CampaignMapIcon from "../icons/campaign-map-icon";
-// import { ContainerOutlined } from "@ant-design/icons";
 
 export default function SidebarMenu() {
   const [selectedKeysFomUrl, setSelectedKeys] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
-    var path =
+    let path =
       location.pathname === "/" || location.pathname === "/deck"
         ? "root"
         : location.pathname;

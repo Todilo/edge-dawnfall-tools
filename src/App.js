@@ -38,10 +38,10 @@ export default function App() {
               <Content>
                 <Switch>
                   <Route exact path="/">
-                    <DeckPage readonly={false}></DeckPage>
+                    <DeckPage></DeckPage>
                   </Route>
                   <Route path="/deck">
-                    <DeckPage readonly={true}></DeckPage>
+                    <DeckPage readonly></DeckPage>
                   </Route>
                   <Route path="/campaign">
                     <CampaignTracker />

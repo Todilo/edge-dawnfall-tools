@@ -21,7 +21,7 @@ export default function Deck({
       : 0;
   };
 
-  var content = (cardSource) => (
+  let content = (cardSource) => (
     <div>
       <img className="deck-table__card-image" src={cardSource} alt="" />
     </div>

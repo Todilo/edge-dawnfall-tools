@@ -1,10 +1,10 @@
-import "../deck-table/deck-table.css";
+import "deck-table/deck-table.css";
 // Data
-import { cards } from "../cards";
-import { squadTypes } from "../squadTypes";
-import { defaultDecks } from "../default_decks";
+import { cards } from "cards";
+import { squadTypes } from "squadTypes";
+import { defaultDecks } from "default_decks";
 
-import { factions } from "../factions";
+import { factions } from "factions";
 
 import React, { useState, useEffect, useReducer, useCallback } from "react";
 import { Button, Col, Row, message, Space, Menu, Dropdown } from "antd";
@@ -14,28 +14,22 @@ import { LinkOutlined, PlusSquareOutlined } from "@ant-design/icons";
 
 import copy from "copy-to-clipboard";
 
-import deckExporter from "../deckExporter";
+import deckExporter from "deckExporter";
 import { saveAs } from "file-saver";
 
 // Own components
-import DeckTable from "../deck-table/deck-table";
-import SquadSelector from "../squad-selector/squad-selector";
-import Deck from "../deck/deck";
-import SaveDeck from "../deck/save-deck";
+import DeckTable from "deck-table/deck-table";
+import SquadSelector from "squad-selector/squad-selector";
+import Deck from "deck/deck";
+import SaveDeck from "deck/save-deck";
 
-import DisplayMessages from "../display-messages/display-messages";
+import DisplayMessages from "display-messages/display-messages";
 
-import cardReducer from "../deck-table/cardReducer";
-import userDeckReducer from "../deck/userDeckReducer";
+import cardReducer from "deck-table/cardReducer";
+import userDeckReducer from "deck/userDeckReducer";
 
 const getInitialSquad = (selectedFaction) => {
-  // var localStorageSquads = JSON.parse(window.localStorage.getItem("squads"));
-  // if (localStorageSquads) {
-  //   window.localStorage.removeItem("squads");
-  //   return localStorageSquads;
-  // }
-
-  var listOfSquads = squadTypes.filter(
+  let listOfSquads = squadTypes.filter(
     (squad) =>
       squad.type !== "ANY_SQUAD" && squad.faction === selectedFaction.type
   );
@@ -46,7 +40,7 @@ const getInitialSquad = (selectedFaction) => {
   return listOfSquads;
 };
 const getInitialUserDecks = () => {
-  var decks = JSON.parse(localStorage.getItem("savedDecks")) || [];
+  let decks = JSON.parse(localStorage.getItem("savedDecks")) || [];
   defaultDecks.forEach((deck) => {
     if (decks.some((d) => d.id === deck.id)) return;
     decks.push(deck);
@@ -55,28 +49,17 @@ const getInitialUserDecks = () => {
 };
 
 const getInitialCards = (selectedFaction) => {
-  // var localStorageCards = JSON.parse(window.localStorage.getItem("cards"));
-  // if (localStorageCards) {
-  //   window.localStorage.removeItem("cards");
-  //   return localStorageCards;
-  // }
-
-  var listOfCards = cards.filter(
+  let listOfCards = cards.filter(
     (card) => card.faction === selectedFaction.type
   );
   return listOfCards;
 };
 
 const getInitialFaction = () => {
-  // var localStorageFaction = JSON.parse(window.localStorage.getItem("faction"));
-  // if (localStorageFaction) {
-  //   window.localStorage.removeItem("faction");
-  //   return localStorageFaction;
-  // }
   return factions[0];
 };
 
-export default function DeckPage({ readonly }) {
+export default function DeckPage({ readonly = false }) {
   const [isDeckLocked, setIsDeckLocked] = useState(readonly);
   const [alertMessages, setAlertMessages] = useState([]);
   const [deckName, setDeckName] = useState("New deck");
@@ -89,9 +72,9 @@ export default function DeckPage({ readonly }) {
   const [selectedFaction, setFaction] = useState(getInitialFaction());
   const [savedDecks, dispatchDecks] = useReducer(userDeckReducer, []);
   const loadDeck = (id) => {
-    var deck = savedDecks.find((deck) => deck.id === id);
+    let deck = savedDecks.find((deck) => deck.id === id);
 
-    var faction = changeFaction(deck.faction);
+    let faction = changeFaction(deck.faction);
     dispatchSquads({
       type: "reset",
       reset: getInitialSquad(faction),
@@ -110,18 +93,6 @@ export default function DeckPage({ readonly }) {
   };
 
   const newDeck = () => {
-    // window.localStorage.setItem(
-    //   "squads",
-    //   JSON.stringify(selectedSquads)
-    // );
-    // window.localStorage.setItem(
-    //   "cards",
-    //   JSON.stringify(selectedCards)
-    // );
-    // window.localStorage.setItem(
-    //   "faction",
-    //   JSON.stringify(selectedFaction)
-    // );
     history.push("");
     reset();
   };
@@ -131,9 +102,9 @@ export default function DeckPage({ readonly }) {
   }, [deckId, readonly]);
 
   const saveDeck = () => {
-    var faction = selectedFaction.type;
-    var squads = getIdsFromList(selectedSquads);
-    var cards = getIdsFromList(selectedCards);
+    let faction = selectedFaction.type;
+    let squads = getIdsFromList(selectedSquads);
+    let cards = getIdsFromList(selectedCards);
 
     if (deckName.length === 0) {
       message.error("Can not save deck, please set a name.");
@@ -159,7 +130,7 @@ export default function DeckPage({ readonly }) {
   }, [savedDecks]);
 
   const changeFaction = useCallback((faction) => {
-    var newFaction = factions.find((f) => f.type === faction);
+    let newFaction = factions.find((f) => f.type === faction);
     setFaction(newFaction);
     return newFaction;
   }, []);
@@ -173,6 +144,7 @@ export default function DeckPage({ readonly }) {
     dispatchDecks({ type: "reset", reset: getInitialUserDecks() });
     setDeckId(Date.now().toString());
   };
+
   // This needs to fire before the query fetching
   useEffect(() => {
     if (location.pathname !== "/") return;
@@ -182,19 +154,19 @@ export default function DeckPage({ readonly }) {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    var queryCardIds = searchParams.get("cards");
+    let queryCardIds = searchParams.get("cards");
     if (!queryCardIds) return;
     queryCardIds = queryCardIds.split(",").filter((s) => s !== "");
 
-    var querySquadIds = searchParams.get("squads");
+    let querySquadIds = searchParams.get("squads");
 
     if (!querySquadIds) return;
     querySquadIds = searchParams
       .get("squads")
       .split("")
       .filter((s) => s !== "");
-    var queryFaction = searchParams.get("faction");
-    var deckName = searchParams.get("deckname");
+    let queryFaction = searchParams.get("faction");
+    let deckName = searchParams.get("deckname");
 
     if (
       queryCardIds.length === 0 ||
@@ -203,7 +175,7 @@ export default function DeckPage({ readonly }) {
     )
       return;
 
-    var faction = changeFaction(queryFaction);
+    let faction = changeFaction(queryFaction);
     dispatchSquads({
       type: "reset",
       reset: getInitialSquad(faction),
@@ -223,8 +195,8 @@ export default function DeckPage({ readonly }) {
 
   const setAlertMessage = useCallback(
     (caller, message) => {
-      var messages = [...alertMessages];
-      var exist = messages.find((item) => item.caller === caller);
+      let messages = [...alertMessages];
+      let exist = messages.find((item) => item.caller === caller);
 
       if (exist) {
         if (exist.message === message) return;
@@ -266,7 +238,7 @@ export default function DeckPage({ readonly }) {
   };
 
   const exportDeckToODS = () => {
-    var fileWithInfo = deckExporter(
+    let fileWithInfo = deckExporter(
       selectedCards,
       selectedSquads,
       deckName,
@@ -276,7 +248,7 @@ export default function DeckPage({ readonly }) {
   };
 
   const exportDeckToXLSX = () => {
-    var fileWithInfo = deckExporter(
+    let fileWithInfo = deckExporter(
       selectedCards,
       selectedSquads,
       deckName,
@@ -297,8 +269,8 @@ export default function DeckPage({ readonly }) {
   );
 
   const copyDeckUrlToClipboard = () => {
-    var squads = getIdsFromList(selectedSquads);
-    var cards = getIdsFromList(selectedCards);
+    let squads = getIdsFromList(selectedSquads);
+    let cards = getIdsFromList(selectedCards);
     if (cards.length === 0) {
       message.error("Unable to share deck. You have not selected any cards");
       return;
@@ -307,7 +279,7 @@ export default function DeckPage({ readonly }) {
       message.error("Unable to share deck. You have not selected any squads");
       return;
     }
-    var url =
+    let url =
       window.location.origin +
       "/deck?cards=" +
       cards.toString() +
@@ -327,7 +299,7 @@ export default function DeckPage({ readonly }) {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <div className="site-card-wrapper">
         <Space>
           <Button
@@ -401,6 +373,6 @@ export default function DeckPage({ readonly }) {
           availableCards={cards}
         ></DeckTable>
       </div>
-    </div>
+    </React.Fragment>
   );
 }

@@ -3,7 +3,7 @@ export default function userDeckReducer(state, action) {
     case "reset":
       return action.reset;
     case "addOrUpdate":
-      var newDeck = {
+      let newDeck = {
         name: action.deckName,
         id: action.id,
         cards: action.cards,
@@ -11,10 +11,10 @@ export default function userDeckReducer(state, action) {
         faction: action.faction,
       };
 
-      var deckIndex = state.findIndex((d) => d.id === action.id);
+      let deckIndex = state.findIndex((d) => d.id === action.id);
 
       if (deckIndex > -1) {
-        var updatedDecks = [
+        let updatedDecks = [
           ...state.slice(0, deckIndex),
           newDeck,
           ...state.slice(deckIndex + 1),
@@ -26,11 +26,11 @@ export default function userDeckReducer(state, action) {
       }
 
     case "remove":
-      var existingItemToRemoveIndex = state.findIndex(
+      let existingItemToRemoveIndex = state.findIndex(
         (d) => d.id === action.id
       );
 
-      if (existingItemToRemoveIndex === -1) return;
+      if (existingItemToRemoveIndex === -1) return state;
 
       return [
         ...state[existingItemToRemoveIndex].decks.slice(0, deckIndex),
