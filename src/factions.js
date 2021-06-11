@@ -42,20 +42,19 @@ export const factions = [
     // bannerBackImageSrc: "images/factions/dvergar/generic/banner_back.png",
     bannerAlternativeFront:
       "images/factions/dvergar/generic/banner_alternative.png",
-    shrine: "images/factions/chapter/dvergar/shrine.png",
+    shrine: "images/factions/dvergar/generic/shrine.png",
     shrineAlternative: "images/factions/dvergar/generic/shrine_alternative.png",
   },
   {
     id: 5,
     type: "rhazack",
     name: "Rha-Zack",
-    bannerFrontImageSrc: "images/factions/rha-zack/generic/banner_front.png",
+    bannerFrontImageSrc: "images/factions/rhazack/generic/banner_front.png",
     // bannerBackImageSrc: "images/factions/rha-zack/generic/banner_back.png",
     bannerAlternativeFront:
-      "images/factions/rha-zack/generic/banner_alternative.png",
-    shrine: "images/factions/rha-zack/generic/shrine.png",
-    shrineAlternative:
-      "images/factions/rha-zack/generic/shrine_alternative.png",
+      "images/factions/rhazack/generic/banner_alternative.png",
+    shrine: "images/factions/rhazack/generic/shrine.png",
+    shrineAlternative: "images/factions/rhazack/generic/shrine_alternative.png",
   },
   {
     id: 6,
