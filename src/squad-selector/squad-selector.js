@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Card, Typography, Popover, Select } from "antd";
+import { Button, Card, Typography, Popover, Select, Radio } from "antd";
 
 import "./squad-selector.css";
 const { Option } = Select;
@@ -13,6 +13,10 @@ function SquadSelector({
   factions,
   selectedFaction,
   readonly,
+  setBanner,
+  setShrine,
+  selectedBanner,
+  selectedShrine,
 }) {
   const numberOfSelectedUnits = () => {
     return selectedSquads.length > 0
@@ -154,54 +158,85 @@ function SquadSelector({
         <div></div>
       )}
       <div className="squad-select__generic-card-popover">
-        <Popover
-          content={bannerImagePopoverContent(
-            selectedFaction.bannerFrontImageSrc,
-            "Front",
-            selectedFaction.bannerBackImageSrc,
-            "Back"
-          )}
-          trigger="hover"
-          placement="bottom"
+        <Radio.Group
+          optionType="button"
+          onChange={(event) => setBanner(event.target.value)}
+          value={selectedBanner}
         >
-          <Button size="medium">
-            <span>Banner</span>
-          </Button>
-        </Popover>
-        <Popover
-          content={bannerImagePopoverContent(
-            selectedFaction.bannerAlternativeFront,
-            "Front",
-            selectedFaction.bannerAlternativeBack,
-            "Back"
-          )}
-          trigger="hover"
-          placement="bottom"
-        >
-          <Button
-            size="medium"
-            className="squad-selector__faction-alternative-button"
+          <Popover
+            content={bannerImagePopoverContent(
+              selectedFaction.bannerFrontImageSrc,
+              "Front",
+              selectedFaction.bannerBackImageSrc,
+              "Back"
+            )}
+            trigger="hover"
+            placement="bottom"
           >
-            <span>Alternative banner</span>
-          </Button>
-        </Popover>
-        <Popover
-          content={bannerImagePopoverContent(
-            selectedFaction.shrine,
-            "Regular",
-            selectedFaction.shrineAlternative,
-            "Alternative"
-          )}
-          trigger="hover"
-          placement="bottom"
-        >
-          <Button
-            size="medium"
-            className="squad-selector__faction-alternative-button"
+            <Radio.Button value="regular" size="medium">
+              <span>Banner</span>
+            </Radio.Button>
+          </Popover>
+          <Popover
+            content={bannerImagePopoverContent(
+              selectedFaction.bannerAlternativeFront,
+              "Front",
+              selectedFaction.bannerAlternativeBack,
+              "Back"
+            )}
+            trigger="hover"
+            placement="bottom"
           >
-            <span>Shrine</span>
-          </Button>
-        </Popover>
+            <Radio.Button
+              value="alternative"
+              size="medium"
+              className="squad-selector__faction-alternative-button"
+            >
+              <span>Alt. banner</span>
+            </Radio.Button>
+          </Popover>
+        </Radio.Group>
+        <Radio.Group
+          onChange={(event) => setShrine(event.target.value)}
+          value={selectedShrine}
+        >
+          <Popover
+            content={bannerImagePopoverContent(
+              selectedFaction.shrine,
+              "Regular",
+              "",
+              ""
+            )}
+            trigger="hover"
+            placement="bottom"
+          >
+            <Radio.Button
+              value="regular"
+              size="medium"
+              className="squad-selector__faction-alternative-button"
+            >
+              <span>Shrine</span>
+            </Radio.Button>
+          </Popover>
+          <Popover
+            content={bannerImagePopoverContent(
+              selectedFaction.shrineAlternative,
+              "Alternative",
+              "",
+              ""
+            )}
+            trigger="hover"
+            placement="bottom"
+          >
+            <Radio.Button
+              value="alternative"
+              size="medium"
+              className="squad-selector__faction-alternative-button"
+            >
+              <span>Alt. Shrine</span>
+            </Radio.Button>
+          </Popover>
+        </Radio.Group>
       </div>
     </Card>
   );

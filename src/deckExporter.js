@@ -1,12 +1,26 @@
 import XLSX from "xlsx";
 
-export default function deckExporter(cards, squads, deckName, documentType) {
+export default function deckExporter(
+  cards,
+  squads,
+  deckName,
+  selectedBanner,
+  selectedSquad,
+  documentType
+) {
   var wb = XLSX.utils.book_new();
   wb.Props = {
     Title: "Edge Dawnfall Deck - " + deckName,
     CreatedDate: Date.now(),
   };
+  wb.SheetNames.push("BannerAndShrine");
+  let basData = [
+    ["Banner", "Shrine"],
+    [selectedBanner, selectedSquad],
+  ];
 
+  let basSheet = XLSX.utils.aoa_to_sheet(basData);
+  wb.Sheets["BannerAndShrine"] = basSheet;
   wb.SheetNames.push("Squads");
 
   let squadData = [["Squad", "Count"]];

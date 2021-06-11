@@ -63,6 +63,8 @@ export default function DeckPage({ readonly = false }) {
   const [isDeckLocked, setIsDeckLocked] = useState(readonly);
   const [alertMessages, setAlertMessages] = useState([]);
   const [deckName, setDeckName] = useState("New deck");
+  const [selectedBanner, setBanner] = useState("regular");
+  const [selectedShrine, setShrine] = useState("regular");
   const [deckId, setDeckId] = useState(Date.now().toString());
   const location = useLocation();
   const history = useHistory();
@@ -89,6 +91,8 @@ export default function DeckPage({ readonly = false }) {
       dispatchSquads({ type: "add", id });
     });
     setDeckName(deck.name);
+    setBanner(deck.selectedBanner);
+    setShrine(deck.selectedShrine);
     setDeckId(id);
   };
 
@@ -117,6 +121,8 @@ export default function DeckPage({ readonly = false }) {
       squads: squads,
       cards: cards,
       deckName: deckName,
+      selectedBanner: selectedBanner,
+      selectedShrine: selectedShrine,
       id: deckId,
     });
     history.push("");
@@ -242,6 +248,8 @@ export default function DeckPage({ readonly = false }) {
       selectedCards,
       selectedSquads,
       deckName,
+      selectedBanner,
+      selectedShrine,
       "ods"
     );
     saveAs(fileWithInfo.blob, fileWithInfo.fileName);
@@ -252,6 +260,8 @@ export default function DeckPage({ readonly = false }) {
       selectedCards,
       selectedSquads,
       deckName,
+      selectedBanner,
+      selectedShrine,
       "xlsx"
     );
     saveAs(fileWithInfo.blob, fileWithInfo.fileName);
@@ -345,6 +355,10 @@ export default function DeckPage({ readonly = false }) {
               changeFaction={changeFaction}
               factions={factions}
               selectedFaction={selectedFaction}
+              setBanner={setBanner}
+              setShrine={setShrine}
+              selectedBanner={selectedBanner}
+              selectedShrine={selectedShrine}
             ></SquadSelector>
           </Col>
           <Col md={24} sm={24} xs={24} lg={8}>

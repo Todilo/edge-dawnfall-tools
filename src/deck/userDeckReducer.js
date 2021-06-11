@@ -9,6 +9,8 @@ export default function userDeckReducer(state, action) {
         cards: action.cards,
         squads: action.squads,
         faction: action.faction,
+        selectedShrine: action.selectedShrine,
+        selectedBanner: action.selectedBanner,
       };
 
       let deckIndex = state.findIndex((d) => d.id === action.id);
