@@ -2095,6 +2095,7 @@ export const cards = [
     squad: "HOLY_RIDERS",
     count: 0,
     faction: "chapter",
+    ignoreLimit: true,
   },
   {
     id: 122,
@@ -2131,6 +2132,7 @@ export const cards = [
     squad: "SUCCUBUS",
     count: 0,
     faction: "demon",
+    ignoreLimit: true,
   },
   {
     id: 124,
@@ -2203,6 +2205,7 @@ export const cards = [
     squad: "DRILLERS",
     count: null,
     faction: "dvergar",
+    ignoreLimit: true,
   },
   {
     id: 128,
@@ -2275,6 +2278,7 @@ export const cards = [
     squad: "ANATHEMA",
     count: null,
     faction: "faceless",
+    ignoreLimit: true,
   },
   {
     id: 132,
@@ -2365,6 +2369,7 @@ export const cards = [
     squad: "FOREST_WRAITH",
     count: null,
     faction: "reborn",
+    ignoreLimit: true,
   },
   {
     id: 137,
@@ -2419,6 +2424,7 @@ export const cards = [
     squad: "JUMPSUIT",
     count: null,
     faction: "rhazack",
+    ignoreLimit: true,
   },
   {
     id: 140,
@@ -2471,6 +2477,7 @@ export const cards = [
     squad: "PRIME_SHADOW",
     count: null,
     faction: "darkness",
+    ignoreLimit: true,
   },
   {
     id: 143,
