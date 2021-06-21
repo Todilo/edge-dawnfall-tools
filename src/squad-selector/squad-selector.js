@@ -132,6 +132,7 @@ function SquadSelector({
                 <span>
                   {squad.name} {squad.isElite ? "(elite)" : ""}{" "}
                   {squad.isCavalry ? "(cavalry)" : ""}
+                  {squad.isBoss ? "(boss)" : ""}
                 </span>
               </Button>
             </Popover>
