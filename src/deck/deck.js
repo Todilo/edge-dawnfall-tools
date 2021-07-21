@@ -7,6 +7,7 @@ export default function Deck({
   deckName,
   setDeckName,
   saveDeck,
+  saveAsDeck,
   deckId,
   dispatchCards,
   readonly,
@@ -97,6 +98,14 @@ export default function Deck({
               onClick={saveDeck}
             >
               Save
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="deck-name-edit__save"
+              onClick={saveAsDeck}
+            >
+              Save As
             </Button>
           </span>
         </div>

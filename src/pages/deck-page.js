@@ -128,6 +128,30 @@ export default function DeckPage({ readonly = false }) {
     history.push("");
   };
 
+  const saveAsDeck = () => {
+    let faction = selectedFaction.type;
+    let squads = getIdsFromList(selectedSquads);
+    let cards = getIdsFromList(selectedCards);
+
+    if (deckName.length === 0) {
+      message.error("Can not save deck, please set a name.");
+      return;
+    }
+    var newDeckId = Date.now().toString();
+    setDeckId(newDeckId);
+    dispatchDecks({
+      type: "addOrUpdate",
+      faction: faction,
+      squads: squads,
+      cards: cards,
+      deckName: deckName,
+      selectedBanner: selectedBanner,
+      selectedShrine: selectedShrine,
+      id: newDeckId,
+    });
+    history.push("");
+  };
+
   useEffect(() => {
     // Intentionally not possible to clear save-decks because that was too tricky.
     if (savedDecks.length > 0) {
@@ -369,6 +393,7 @@ export default function DeckPage({ readonly = false }) {
               deckName={deckName}
               selectedCards={selectedCards}
               saveDeck={saveDeck}
+              saveAsDeck={saveAsDeck}
               dispatchCards={dispatchCards}
             ></Deck>
           </Col>
