@@ -314,7 +314,7 @@ export const squadTypes = [
   {
     id: 27,
     type: "ORACLE_OF_WRATH",
-    name: "Oracle of Wrather",
+    name: "Oracle of Wrath",
     img: "images/factions/reborn/units/oracle_of_wrath.png",
     imgBack: "images/factions/reborn/units/oracle_of_wrath_move.png",
     cardCount: 1,
