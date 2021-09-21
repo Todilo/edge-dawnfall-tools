@@ -6,12 +6,7 @@ import { Layout, Typography } from "antd";
 
 // Own components
 // import SidebarMenu from "./sidebar-menu/sidebar-menu";
-import {
-  DeckPage,
-  ExtraResourcesPage,
-  CampaignTracker,
-  EditorPage,
-} from "./pages/";
+import { DeckPage } from "./pages/";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const { Header, Footer, Content } = Layout;
@@ -31,9 +26,6 @@ export default function App() {
             </Title>
           </Header>
           <Layout>
-            {/* <Sider breakpoint="lg" collapsedWidth="0">
-              <SidebarMenu />
-            </Sider> */}
             <Layout style={{ padding: 0 }}>
               <Content>
                 <Switch>
@@ -42,15 +34,6 @@ export default function App() {
                   </Route>
                   <Route path="/deck">
                     <DeckPage readonly></DeckPage>
-                  </Route>
-                  <Route path="/campaign">
-                    <CampaignTracker />
-                  </Route>
-                  <Route path="/extra-resources">
-                    <ExtraResourcesPage />
-                  </Route>
-                  <Route path="/editor-page">
-                    <EditorPage />
                   </Route>
                 </Switch>
               </Content>

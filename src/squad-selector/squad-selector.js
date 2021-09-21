@@ -112,7 +112,10 @@ function SquadSelector({
               <Button
                 size="small"
                 type="primary"
-                style={{ backgroundColor: "red", borderColor: "red" }}
+                style={{
+                  backgroundColor: squad.count > 0 ? "red" : "transparent",
+                  borderColor: "red",
+                }}
                 ghost={squad.count === 0}
                 onClick={() => dispatchSquads({ type: "remove", id: squad.id })}
                 disabled={squad.count === 0}
