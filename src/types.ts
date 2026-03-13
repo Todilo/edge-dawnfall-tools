@@ -15,7 +15,6 @@ export interface Card {
   squad: string;
   count: number;
   faction: string;
-  readonly?: boolean;
   ignoreLimit?: boolean;
 }
 
@@ -62,7 +61,16 @@ export interface AlertMessage {
   key: string;
 }
 
-export type CardReducerAction =
-  | { type: "reset"; reset: Card[] | Squad[] }
-  | { type: "add"; id: number }
-  | { type: "remove"; id: number };
+export interface DeckActions {
+  addCard: (id: number) => void;
+  removeCard: (id: number) => void;
+  addSquad: (id: number) => void;
+  removeSquad: (id: number) => void;
+  setDeckName: (deckName: string) => void;
+  setBanner: (banner: string) => void;
+  setShrine: (shrine: string) => void;
+  setAlertMessage: (caller: string, message: string) => void;
+  changeFaction: (factionType: string) => void;
+  resetDeck: (factionType?: string) => void;
+  loadDeck: (id: DeckId) => boolean;
+}

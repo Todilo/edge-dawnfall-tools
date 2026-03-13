@@ -1,14 +1,107 @@
-import React, { useEffect } from "react";
-import { Button, Card, Typography, Popover, Select, Radio } from "antd";
+import { useEffect } from "react";
+import { Button, Card, Popover, Radio, Select, Typography } from "antd";
 
+import type { Card as DeckCard, Faction, Squad } from "../types";
 import "./squad-selector.css";
+
 const { Option } = Select;
 
-function SquadSelector({
+interface SquadSelectorProps {
+  selectedSquads: Squad[];
+  selectedCards: DeckCard[];
+  setAlertMessage: (caller: string, message: string) => void;
+  addSquad: (id: number) => void;
+  removeSquad: (id: number) => void;
+  changeFaction: (factionType: string) => void;
+  factions: Faction[];
+  selectedFaction: Faction;
+  readonly: boolean;
+  setBanner: (banner: string) => void;
+  setShrine: (shrine: string) => void;
+  selectedBanner: string;
+  selectedShrine: string;
+}
+
+function getNumberOfSelectedUnits(selectedSquads: Squad[]) {
+  return selectedSquads.reduce((previous, current) => previous + current.count, 0);
+}
+
+function renderSquadPreview(cardSource?: string, cardBackSource?: string) {
+  return (
+    <>
+      {cardSource ? (
+        <img className="squad-selector__card-image" src={cardSource} alt="" />
+      ) : null}
+      {cardBackSource ? (
+        <img
+          className="squad-selector__card-image"
+          src={cardBackSource}
+          alt=""
+        />
+      ) : null}
+    </>
+  );
+}
+
+function renderBannerPopover(
+  frontSource: string,
+  frontLabel: string,
+  backSource?: string,
+  backLabel?: string
+) {
+  return (
+    <div className="squad-selector__banner-popover">
+      <figure className="squad-selector__card-image-holder">
+        <img className="squad-selector__card-image" src={frontSource} alt="" />
+        <figcaption>{frontLabel}</figcaption>
+      </figure>
+      {backSource ? (
+        <figure className="squad-selector__card-image-holder">
+          <img className="squad-selector__card-image" src={backSource} alt="" />
+          <figcaption>{backLabel}</figcaption>
+        </figure>
+      ) : null}
+    </div>
+  );
+}
+
+function getCompatibilityMessage(
+  selectedCards: DeckCard[],
+  selectedSquads: Squad[]
+) {
+  const selectedDeckCards = selectedCards.filter((card) => card.count > 0);
+  if (selectedDeckCards.length === 0) {
+    return "";
+  }
+
+  const missingSquads = selectedDeckCards.reduce<string[]>((missing, card) => {
+    const squad = selectedSquads.find(
+      (selectedSquad) =>
+        selectedSquad.type === card.squad && selectedSquad.count === 0
+    );
+
+    if (squad && !missing.includes(squad.name)) {
+      missing.push(squad.name);
+    }
+
+    return missing;
+  }, []);
+
+  if (missingSquads.length === 0) {
+    return "";
+  }
+
+  return `Your deck and squad is not compatible. Missing squads.${missingSquads
+    .map((squad) => `\n${squad}`)
+    .join("")}`;
+}
+
+export default function SquadSelector({
   selectedSquads,
   selectedCards,
   setAlertMessage,
-  dispatchSquads,
+  addSquad,
+  removeSquad,
   changeFaction,
   factions,
   selectedFaction,
@@ -17,71 +110,18 @@ function SquadSelector({
   setShrine,
   selectedBanner,
   selectedShrine,
-}) {
-  const numberOfSelectedUnits = () => {
-    return selectedSquads.length > 0
-      ? selectedSquads.reduce((previous, current) => {
-          return previous + current.count;
-        }, 0)
-      : 0;
-  };
+}: SquadSelectorProps) {
+  const numberOfSelectedUnits = getNumberOfSelectedUnits(selectedSquads);
 
   useEffect(() => {
-    let selectedDeckCards = selectedCards.filter((card) => card.count > 0);
-
-    if (selectedDeckCards.length > 0) {
-      let anyCard = selectedDeckCards.reduce((missing, card) => {
-        let find = selectedSquads.find(
-          (squad) => squad.type === card.squad && squad.count === 0
-        );
-        if (typeof find !== "undefined" && missing.indexOf(find.name) === -1) {
-          missing.push(find.name);
-        }
-        return missing;
-      }, []);
-
-      if (anyCard.length > 0) {
-        let message =
-          "Your deck and squad is not compatible. Missing squads." +
-          anyCard.map((card) => "\n" + card);
-        setAlertMessage("squadSelector", message);
-      } else {
-        setAlertMessage("squadSelector", "");
-      }
-    } else {
-      setAlertMessage("squadSelector", "");
-    }
+    setAlertMessage(
+      "squadSelector",
+      getCompatibilityMessage(selectedCards, selectedSquads)
+    );
   }, [selectedCards, selectedSquads, setAlertMessage]);
 
-  const content = (cardSource, cardBackSource) => (
-    <React.Fragment>
-      <img className="squad-selector__card-image" src={cardSource} alt="" />
-      <img className="squad-selector__card-image" src={cardBackSource} alt="" />
-    </React.Fragment>
-  );
-
-  const bannerImagePopoverContent = (
-    frontSource,
-    frontLabel,
-    backSource,
-    backLabel
-  ) => (
-    <div className="squad-selector__banner-popover">
-      <figure className="squad-selector__card-image-holder">
-        <img className="squad-selector__card-image" src={frontSource} alt="" />
-        <figcaption>{frontLabel}</figcaption>
-      </figure>
-      {backSource && (
-        <figure className="squad-selector__card-image-holder">
-          <img className="squad-selector__card-image" src={backSource} alt="" />
-          <figcaption>{backLabel}</figcaption>
-        </figure>
-      )}
-    </div>
-  );
-
   return (
-    <Card title="Squads" type="inner" bordered={true}>
+    <Card title="Squads" type="inner" bordered>
       <div className="squad-selector__faction-select">
         <Select
           disabled={readonly}
@@ -99,14 +139,15 @@ function SquadSelector({
       </div>
       <Typography>
         Begin by selecting 5 squads from your chosen faction. You can have
-        multiple squads of some squad types.<br></br>
-        <br></br>
+        multiple squads of some squad types.
+        <br />
+        <br />
       </Typography>
       <span style={{ color: "rgba(255, 255, 255, 0.85)" }}>
-        {numberOfSelectedUnits()} / 5 - Selected units
+        {numberOfSelectedUnits} / 5 - Selected units
       </span>
       {selectedSquads.length ? (
-        selectedSquads.map((squad, index) => (
+        selectedSquads.map((squad) => (
           <div className="squad-selector__squad" key={squad.id}>
             {!readonly && (
               <Button
@@ -117,14 +158,14 @@ function SquadSelector({
                   borderColor: "red",
                 }}
                 ghost={squad.count === 0}
-                onClick={() => dispatchSquads({ type: "remove", id: squad.id })}
+                onClick={() => removeSquad(squad.id)}
                 disabled={squad.count === 0}
               >
                 -
               </Button>
             )}
             <Popover
-              content={content(squad.img, squad.imgBack)}
+              content={renderSquadPreview(squad.img, squad.imgBack)}
               trigger="hover"
               placement="right"
             >
@@ -143,14 +184,12 @@ function SquadSelector({
               <Button
                 size="small"
                 type="primary"
-                onClick={() => dispatchSquads({ type: "add", id: squad.id })}
+                onClick={() => addSquad(squad.id)}
                 ghost={
-                  squad.cardCount === squad.count ||
-                  numberOfSelectedUnits() >= 5
+                  squad.cardCount === squad.count || numberOfSelectedUnits >= 5
                 }
                 disabled={
-                  squad.cardCount === squad.count ||
-                  numberOfSelectedUnits() >= 5
+                  squad.cardCount === squad.count || numberOfSelectedUnits >= 5
                 }
               >
                 +
@@ -159,7 +198,7 @@ function SquadSelector({
           </div>
         ))
       ) : (
-        <div></div>
+        <div />
       )}
       <div className="squad-select__generic-card-popover">
         <Radio.Group
@@ -168,7 +207,7 @@ function SquadSelector({
           value={selectedBanner}
         >
           <Popover
-            content={bannerImagePopoverContent(
+            content={renderBannerPopover(
               selectedFaction.bannerFrontImageSrc,
               "Front",
               selectedFaction.bannerBackImageSrc,
@@ -177,12 +216,12 @@ function SquadSelector({
             trigger="hover"
             placement="bottom"
           >
-            <Radio.Button value="regular" size="medium">
+            <Radio.Button value="regular">
               <span>Banner</span>
             </Radio.Button>
           </Popover>
           <Popover
-            content={bannerImagePopoverContent(
+            content={renderBannerPopover(
               selectedFaction.bannerAlternativeFront,
               "Front",
               selectedFaction.bannerAlternativeBack,
@@ -193,7 +232,6 @@ function SquadSelector({
           >
             <Radio.Button
               value="alternative"
-              size="medium"
               className="squad-selector__faction-alternative-button"
             >
               <span>Alt. banner</span>
@@ -205,36 +243,27 @@ function SquadSelector({
           value={selectedShrine}
         >
           <Popover
-            content={bannerImagePopoverContent(
-              selectedFaction.shrine,
-              "Regular",
-              "",
-              ""
-            )}
+            content={renderBannerPopover(selectedFaction.shrine, "Regular")}
             trigger="hover"
             placement="bottom"
           >
             <Radio.Button
               value="regular"
-              size="medium"
               className="squad-selector__faction-alternative-button"
             >
               <span>Shrine</span>
             </Radio.Button>
           </Popover>
           <Popover
-            content={bannerImagePopoverContent(
+            content={renderBannerPopover(
               selectedFaction.shrineAlternative,
-              "Alternative",
-              "",
-              ""
+              "Alternative"
             )}
             trigger="hover"
             placement="bottom"
           >
             <Radio.Button
               value="alternative"
-              size="medium"
               className="squad-selector__faction-alternative-button"
             >
               <span>Alt. Shrine</span>
@@ -245,6 +274,3 @@ function SquadSelector({
     </Card>
   );
 }
-
-SquadSelector.whyDidYouRender = true;
-export default React.memo(SquadSelector);

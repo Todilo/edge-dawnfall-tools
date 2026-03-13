@@ -1,6 +1,37 @@
-import React from "react";
-import { Card, Popover, Button, Input } from "antd";
+import { Button, Card, Input, Popover } from "antd";
+
+import type { Card as DeckCard, DeckId } from "../types";
 import "./deck.css";
+
+interface DeckProps {
+  selectedCards: DeckCard[];
+  deckName: string;
+  setDeckName: (deckName: string) => void;
+  saveDeck: () => void;
+  saveAsDeck: () => void;
+  deckId: DeckId;
+  addCard: (id: number) => void;
+  removeCard: (id: number) => void;
+  readonly: boolean;
+}
+
+function getNumberOfSelectedCards(selectedCards: DeckCard[]) {
+  return selectedCards.reduce((previous, current) => {
+    if (current.ignoreLimit) {
+      return previous;
+    }
+
+    return previous + current.count;
+  }, 0);
+}
+
+function renderCardPreview(cardSource: string) {
+  return (
+    <div>
+      <img className="deck-table__card-image" src={cardSource} alt="" />
+    </div>
+  );
+}
 
 export default function Deck({
   selectedCards,
@@ -9,38 +40,26 @@ export default function Deck({
   saveDeck,
   saveAsDeck,
   deckId,
-  dispatchCards,
+  addCard,
+  removeCard,
   readonly,
-}) {
-  const numerOfSelectedCards = () => {
-    if (!selectedCards) return 0;
-    return selectedCards.length > 0
-      ? selectedCards.reduce((previous, current) => {
-          if (current.ignoreLimit) return previous;
-          else return previous + current.count;
-        }, 0)
-      : 0;
-  };
+}: DeckProps) {
+  const numberOfSelectedCards = getNumberOfSelectedCards(selectedCards);
 
-  let content = (cardSource) => (
-    <div>
-      <img className="deck-table__card-image" src={cardSource} alt="" />
-    </div>
-  );
-
-  const deckTitle = () => {
-    return "Deck - " + numerOfSelectedCards().toString() + " / 25";
-  };
   return (
-    <Card type="inner" title={deckTitle()} bordered={true}>
-      {numerOfSelectedCards() > 0 ? (
+    <Card
+      type="inner"
+      title={`Deck - ${numberOfSelectedCards.toString()} / 25`}
+      bordered
+    >
+      {numberOfSelectedCards > 0 ? (
         <div>
           {selectedCards
             .filter((card) => card.count > 0)
             .map((item) => (
               <div key={item.id}>
                 <Popover
-                  content={content(item.img)}
+                  content={renderCardPreview(item.img)}
                   trigger="hover"
                   placement="right"
                 >
@@ -59,9 +78,7 @@ export default function Deck({
                     <Button
                       type="link"
                       size="small"
-                      onClick={() =>
-                        dispatchCards({ type: "remove", id: item.id })
-                      }
+                      onClick={() => removeCard(item.id)}
                     >
                       -
                     </Button>
@@ -71,10 +88,8 @@ export default function Deck({
                     <Button
                       type="link"
                       size="small"
-                      onClick={() =>
-                        dispatchCards({ type: "add", id: item.id })
-                      }
-                      disabled={item.cardCount === item.count || readonly}
+                      onClick={() => addCard(item.id)}
+                      disabled={item.cardCount === item.count}
                     >
                       +
                     </Button>
@@ -94,7 +109,7 @@ export default function Deck({
               type="primary"
               htmlType="submit"
               className="deck-name-edit__save"
-              disabled={deckId < 50}
+              disabled={Number(deckId) < 50}
               onClick={saveDeck}
             >
               Save
