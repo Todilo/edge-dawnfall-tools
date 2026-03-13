@@ -1,13 +1,9 @@
-// Styling
 import "./App.css";
 
-import React from "react";
 import { Layout, Typography } from "antd";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-// Own components
-// import SidebarMenu from "./sidebar-menu/sidebar-menu";
-import { DeckPage } from "./pages/";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import DeckPage from "./pages/deck-page";
 
 const { Header, Footer, Content } = Layout;
 const { Title } = Typography;
@@ -15,7 +11,7 @@ const { Title } = Typography;
 export default function App() {
   return (
     <div className="App">
-      <Router>
+      <BrowserRouter>
         <Layout>
           <Header className="header-container">
             <Title
@@ -28,14 +24,10 @@ export default function App() {
           <Layout>
             <Layout style={{ padding: 0 }}>
               <Content>
-                <Switch>
-                  <Route exact path="/">
-                    <DeckPage></DeckPage>
-                  </Route>
-                  <Route path="/deck">
-                    <DeckPage readonly></DeckPage>
-                  </Route>
-                </Switch>
+                <Routes>
+                  <Route path="/" element={<DeckPage />} />
+                  <Route path="/deck" element={<DeckPage readonly />} />
+                </Routes>
               </Content>
               <Footer style={{ textAlign: "center" }}>
                 Edge Dawnfall Toolbox Created by Todilo. Post any feedback to
@@ -44,7 +36,7 @@ export default function App() {
             </Layout>
           </Layout>
         </Layout>
-      </Router>
+      </BrowserRouter>
     </div>
   );
 }
